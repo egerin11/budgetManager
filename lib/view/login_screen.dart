@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
 import '../utils/animations.dart';
 import '../data/bg_data.dart';
 import '../utils/text_utils.dart';
@@ -16,11 +17,41 @@ class _LoginScreenState extends State<LoginScreen> {
   int selectedIndex = 0;
   bool showOption = false;
   bool isLogin = true;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   void toggleForm() {
     setState(() {
       isLogin = !isLogin;
     });
+  }
+
+  Future<void> _checkAccount() async {
+    try {
+      final signInMethods = await FirebaseAuth.instance
+          .fetchSignInMethodsForEmail(emailController.text.trim());
+
+      if (signInMethods.isNotEmpty) {
+        print('Email exists. Proceeding with login...');
+        // Add your login logic here
+      } else {
+        print('No account found with this email.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No account found with this email.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error checking account: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error checking account: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -69,9 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   : const SizedBox(),
             ),
-            const SizedBox(
-              width: 20,
-            ),
+            const SizedBox(width: 20),
             showOption
                 ? GestureDetector(
                     onTap: () {
@@ -155,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: TextFormField(
+                        controller: emailController,
                         style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           suffixIcon: Icon(
@@ -178,6 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       child: TextFormField(
+                        controller: passwordController,
                         style: const TextStyle(color: Colors.white),
                         decoration: const InputDecoration(
                           suffixIcon: Icon(
@@ -247,13 +278,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: GestureDetector(
                         onTap: () {
                           if (isLogin) {
-                            print('Вход выполнен');
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
+                            _checkAccount();
                           } else {
                             print('Регистрация выполнена');
                             toggleForm();

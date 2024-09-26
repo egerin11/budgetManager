@@ -1,0 +1,25 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "budgetmanager-25b0b",
+          "appId": "1:457292079506:android:d237e175e0dd2b4604e14b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "budgetmanager-25b0b",
+          "configurations": {
+            "android": "1:457292079506:android:d237e175e0dd2b4604e14b",
+            "ios": "1:457292079506:ios:231ccfd77580589304e14b",
+            "macos": "1:457292079506:ios:231ccfd77580589304e14b",
+            "web": "1:457292079506:web:8d170ad9c296867f04e14b",
+            "windows": "1:457292079506:web:c9227ad80dea960904e14b"
+          }
+        }
+      }
+    }
+  }
+}
