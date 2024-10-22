@@ -3,23 +3,26 @@ import 'package:flutter/material.dart';
 class InputField extends StatelessWidget {
   final String hintText;
   final IconData icon;
+  final TextEditingController? controller;
+  final bool isPassword;
+  final String? Function(String?)? validator;
 
   const InputField({
     Key? key,
     required this.hintText,
     required this.icon,
+    this.controller,
+    this.isPassword = false,
+    this.validator,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 50,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.white),
-        ),
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        controller: controller,
+        obscureText: isPassword,
         style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           hintText: hintText,
@@ -28,8 +31,17 @@ class InputField extends StatelessWidget {
             icon,
             color: Colors.white,
           ),
-          border: InputBorder.none,
+          enabledBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.blueAccent),
+          ),
+          errorBorder: const UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.red),
+          ),
         ),
+        validator: validator,
       ),
     );
   }
