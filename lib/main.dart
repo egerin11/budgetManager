@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'native_library.dart';
 import 'view/login_screen.dart';
 import 'view/home_screen.dart';
 
