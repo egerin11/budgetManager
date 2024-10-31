@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ShowUpAnimation extends StatefulWidget {
   final Widget child;
-  int? delay;
+  	int? delay;
 
   ShowUpAnimation({required this.child,  this.delay});
 
