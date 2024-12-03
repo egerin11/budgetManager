@@ -11,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  ffi: ^2.0.0
 
   cupertino_icons: ^1.0.8
   provider: ^6.0.0
@@ -19,8 +20,8 @@ dependencies:
   network_info_plus: ^4.0.0
   wifi_iot: ^0.3.0
   firebase_core: ^3.6.0
-  firebase: ^9.0.3
   firebase_auth: ^5.3.1
+  json_annotation: ^4.7.0
 
 dev_dependencies:
   flutter_test:

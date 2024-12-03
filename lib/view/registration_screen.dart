@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../utils/input_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/text_utils.dart';
+import 'home_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  final VoidCallback onToggle;
-
-  const RegistrationScreen({Key? key, required this.onToggle}) : super(key: key);
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
@@ -15,61 +13,80 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> _register() async {
-    try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+  Future<void> _registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
 
-      print('Успешная регистрация: ${userCredential.user?.email}');
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('Пароль слишком слабый.');
-      } else if (e.code == 'email-already-in-use') {
-        print('Аккаунт с таким email уже существует.');
-      } else {
-        print('Ошибка: ${e.message}');
+        if (userCredential.user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content:
+                    Text('Регистрация успешна: ${userCredential.user!.email}')),
+          );
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()));
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = 'Ошибка: ${e.message}';
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(errorMessage)));
       }
-    } catch (e) {
-      print('Ошибка: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextUtil(text: "Регистрация", weight: true, size: 30),
-            const SizedBox(height: 20),
-            InputField(
-              hintText: "Email",
-              icon: Icons.mail,
-              controller: _emailController,
+    return Scaffold(
+      body: Container(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextUtil(text: "Регистрация", weight: true, size: 30),
+                const SizedBox(height: 20),
+                TextUtil(text: "Email"),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(labelText: 'Введите ваш email'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введите email';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                TextUtil(text: "Пароль"),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: 'Введите ваш пароль'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Введите пароль';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _registerUser,
+                  child: Text('Регистрация'),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            InputField(
-              hintText: "Password",
-              icon: Icons.lock,
-              controller: _passwordController,
-              isObscured: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _register,
-              child: const Text('Зарегистрироваться'),
-            ),
-            TextButton(
-              onPressed: widget.onToggle,
-              child: const Text('Уже есть аккаунт? Войти'),
-            ),
-          ],
+          ),
         ),
       ),
     );

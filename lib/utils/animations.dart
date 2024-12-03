@@ -2,10 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class ShowUpAnimation extends StatefulWidget {
-  /// GETTING THE CHILD WIDGET
   final Widget child;
-  /// GETTING THE ANIMATION DURATION
-  int? delay;
+  	int? delay;
 
   ShowUpAnimation({required this.child,  this.delay});
 
@@ -14,11 +12,8 @@ class ShowUpAnimation extends StatefulWidget {
 }
 
 class _ShowUpAnimationState extends State<ShowUpAnimation> with TickerProviderStateMixin {
-  /// CREATING THE ANIMATION CONTROLLER VARIABLE
   late AnimationController _animController;
-  /// CREATING THE ANIMATION  VARIABLE OF TYPE OFFSET
   late Animation<Offset> _animOffset;
-  /// CREATING THE TIMER VARIABLE
   late Timer _timer;
 
   @override
